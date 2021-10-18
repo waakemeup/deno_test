@@ -20,7 +20,7 @@ app.use(router.routes())
 app.use(postsRouter.prefix('/api/posts').routes())
 app.use(router.allowedMethods())
 
-await db.sync({ drop: true });
+await db.sync()
 
 console.log('database connected');
 
