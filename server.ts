@@ -1,36 +1,6 @@
 import { Application,Router,RouterContext } from "https://deno.land/x/oak/mod.ts";
 import postsRouter from './routes/posts.ts'
-
-
-import { DataTypes, Database, Model, PostgresConnector } from 'https://deno.land/x/denodb/mod.ts';
-
-const connection = new PostgresConnector({
-  host: 'localhost',
-  username: 'Ruby',
-  password: 'lhc415322',
-  database: 'deno_api',
-});
-
-const db = new Database(connection);
-
-class Post extends Model {
-  static table = 'posts';
-  static timestamps = true;
-
-  static fields = {
-    id: { primaryKey: true, autoIncrement: true },
-    username: DataTypes.STRING,
-    body: DataTypes.STRING,
-  };
-
-  static defaults = {
-    flightDuration: 2.5,
-  };
-}
-
-db.link([Post]);
-
-await db.sync({ drop: true });
+import db from './db.ts' 
 
 const app = new Application();
 
@@ -49,6 +19,10 @@ router.get('/api',(context:RouterContext)=>{
 app.use(router.routes())
 app.use(postsRouter.prefix('/api/posts').routes())
 app.use(router.allowedMethods())
+
+await db.sync({ drop: true });
+
+console.log('database connected');
 
 console.log(`SERVER RUNNING AT http://localhost:${port}`);
 
